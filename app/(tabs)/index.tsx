@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet,
   SafeAreaView, ActivityIndicator,
@@ -6,19 +6,9 @@ import {
 import Svg, { Circle } from 'react-native-svg';
 import { Folder, Target, Zap, CircleCheck as CheckCircle2, Plus } from 'lucide-react-native';
 import { useApp } from '@/context/AppContext';
-import VaultModal from '@/components/modals/VaultModal';
-import OnboardingModal from '@/components/modals/OnboardingModal';
-import QuickNoteModal from '@/components/modals/QuickNoteModal';
-import WizardModal from '@/components/modals/WizardModal';
 
 export default function HomeScreen() {
   const { activeProject, projectTasks, completedTasks, loading } = useApp();
-
-  const [vaultOpen, setVaultOpen] = useState(false);
-  const [onboardingOpen, setOnboardingOpen] = useState(false);
-  const [quickNoteOpen, setQuickNoteOpen] = useState(false);
-  const [wizardOpen, setWizardOpen] = useState(false);
-  const [fabOpen, setFabOpen] = useState(false);
 
   const nowTasks = projectTasks.filter(t => t.priority_column === 'High' && !t.completed);
   const nextTasks = projectTasks.filter(
@@ -43,11 +33,7 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.root}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.headerLeft}
-          onPress={() => setVaultOpen(true)}
-          activeOpacity={0.75}
-        >
+        <View style={styles.headerLeft}>
           <Folder size={18} color="#a78bfa" />
           <View>
             <Text style={styles.projectName} numberOfLines={1}>
@@ -55,7 +41,7 @@ export default function HomeScreen() {
             </Text>
             <Text style={styles.vaultHint}>Tap to open Vault</Text>
           </View>
-        </TouchableOpacity>
+        </View>
       </View>
 
       <ScrollView
@@ -165,64 +151,6 @@ export default function HomeScreen() {
 
         <View style={{ height: 100 }} />
       </ScrollView>
-
-      {/* FAB */}
-      {fabOpen && (
-        <TouchableOpacity
-          style={styles.fabOverlay}
-          activeOpacity={1}
-          onPress={() => setFabOpen(false)}
-        >
-          <View style={styles.fabMenu}>
-            <TouchableOpacity
-              style={styles.fabMenuItem}
-              onPress={() => { setFabOpen(false); setWizardOpen(true); }}
-              activeOpacity={0.85}
-            >
-              <Target size={18} color="#ec4899" />
-              <Text style={styles.fabMenuText}>New Priority Task</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.fabMenuItem}
-              onPress={() => { setFabOpen(false); setQuickNoteOpen(true); }}
-              activeOpacity={0.85}
-            >
-              <Zap size={18} color="#f59e0b" />
-              <Text style={styles.fabMenuText}>Quick Note (To Sort)</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.fabMenuItem}
-              onPress={() => { setFabOpen(false); setOnboardingOpen(true); }}
-              activeOpacity={0.85}
-            >
-              <Folder size={18} color="#a78bfa" />
-              <Text style={styles.fabMenuText}>New Project</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-      )}
-      <View style={styles.fabWrap}>
-        <TouchableOpacity
-          style={[styles.fab, fabOpen && styles.fabOpen]}
-          onPress={() => setFabOpen(o => !o)}
-          activeOpacity={0.85}
-        >
-          <Text style={styles.fabIcon}>{fabOpen ? '×' : '+'}</Text>
-        </TouchableOpacity>
-      </View>
-
-      <VaultModal
-        visible={vaultOpen}
-        onClose={() => setVaultOpen(false)}
-        onNewProject={() => { setVaultOpen(false); setOnboardingOpen(true); }}
-      />
-      <OnboardingModal
-        visible={onboardingOpen}
-        onClose={() => setOnboardingOpen(false)}
-        canClose
-      />
-      <QuickNoteModal visible={quickNoteOpen} onClose={() => setQuickNoteOpen(false)} />
-      <WizardModal visible={wizardOpen} onClose={() => setWizardOpen(false)} editingTask={null} />
     </SafeAreaView>
   );
 }
@@ -449,69 +377,5 @@ const styles = StyleSheet.create({
     fontSize: 9,
     color: '#22d3ee',
     fontWeight: '700',
-  },
-  fabOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    zIndex: 20,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    paddingBottom: 150,
-  },
-  fabMenu: {
-    backgroundColor: '#0f172a',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#1e293b',
-    overflow: 'hidden',
-    minWidth: 220,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.5,
-    shadowRadius: 24,
-    elevation: 16,
-  },
-  fabMenuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#1e293b',
-  },
-  fabMenuText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#e2e8f0',
-  },
-  fabWrap: {
-    position: 'absolute',
-    bottom: 80,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-    zIndex: 30,
-  },
-  fab: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#ec4899',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#ec4899',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.5,
-    shadowRadius: 16,
-    elevation: 10,
-  },
-  fabOpen: {
-    backgroundColor: '#334155',
-  },
-  fabIcon: {
-    fontSize: 28,
-    color: '#fff',
-    lineHeight: 32,
-    fontWeight: '300',
   },
 });
