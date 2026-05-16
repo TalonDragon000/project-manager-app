@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet,
   SafeAreaView, ActivityIndicator,
@@ -6,9 +6,13 @@ import {
 import Svg, { Circle } from 'react-native-svg';
 import { Folder, Target, Zap, CircleCheck as CheckCircle2, Plus } from 'lucide-react-native';
 import { useApp } from '@/context/AppContext';
+import VaultModal from '@/components/modals/VaultModal';
+import OnboardingModal from '@/components/modals/OnboardingModal';
 
 export default function HomeScreen() {
   const { activeProject, projectTasks, completedTasks, loading } = useApp();
+  const [vaultOpen, setVaultOpen] = useState(false);
+  const [onboardingOpen, setOnboardingOpen] = useState(false);
 
   const nowTasks = projectTasks.filter(t => t.priority_column === 'High' && !t.completed);
   const nextTasks = projectTasks.filter(
@@ -33,7 +37,11 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.root}>
       {/* Header */}
       <View style={styles.header}>
-        <View style={styles.headerLeft}>
+        <TouchableOpacity
+          style={styles.headerLeft}
+          onPress={() => setVaultOpen(true)}
+          activeOpacity={0.7}
+        >
           <Folder size={18} color="#a78bfa" />
           <View>
             <Text style={styles.projectName} numberOfLines={1}>
@@ -41,7 +49,7 @@ export default function HomeScreen() {
             </Text>
             <Text style={styles.vaultHint}>Tap to open Vault</Text>
           </View>
-        </View>
+        </TouchableOpacity>
       </View>
 
       <ScrollView
@@ -151,6 +159,17 @@ export default function HomeScreen() {
 
         <View style={{ height: 100 }} />
       </ScrollView>
+
+      <VaultModal
+        visible={vaultOpen}
+        onClose={() => setVaultOpen(false)}
+        onNewProject={() => { setVaultOpen(false); setOnboardingOpen(true); }}
+      />
+      <OnboardingModal
+        visible={onboardingOpen}
+        onClose={() => setOnboardingOpen(false)}
+        canClose
+      />
     </SafeAreaView>
   );
 }

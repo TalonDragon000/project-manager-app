@@ -33,7 +33,16 @@ const DEFAULT_FORM: WizardField = {
   moscow: 'Should', tags: [], infoOpen: null,
 };
 
-const METRIC_HINT = 'Why the jump? 1 (Minimal), 2 (Small), 3 (Med), 5 (Large), 8 (Epic). If it feels bigger than a 3, jump to 5.';
+const RICE_HINTS: Record<string, { title: string; desc: string }> = {
+  reach:      { title: 'Reach: How many users does this affect?',     desc: '1 (Just you), 2 (A few), 3 (Some), 5 (Many), 8 (Everyone).' },
+  impact:     { title: 'Impact: How much does it move the needle?',   desc: '1 (Minimal), 2 (Small), 3 (Med), 5 (Large), 8 (Massive).' },
+  confidence: { title: 'Confidence: How sure are you of estimates?',  desc: '1 (Wild guess), 2 (Low), 3 (Med), 5 (High), 8 (Data-backed / 100%).' },
+  effort:     { title: 'Effort: How much work is required?',          desc: '1 (Hours), 2 (A day), 3 (Few days), 5 (A week), 8 (Epic / Weeks). Higher effort lowers the score.' },
+};
+const FIBONACCI_HINT = {
+  title: 'Why jump? (1, 2, 3, 5, 8)',
+  desc: 'As tasks grow, precision gets harder. This scale removes false precision — if it feels bigger than a 3, jump to 5 rather than debating small differences.',
+};
 
 export default function WizardModal({ visible, onClose, editingTask }: Props) {
   const { createTask, updateTask, activeProjectId } = useApp();
@@ -178,7 +187,7 @@ export default function WizardModal({ visible, onClose, editingTask }: Props) {
 
             {/* MoSCoW */}
             <View style={styles.section}>
-              <Text style={styles.sectionLabel}>MoSCoW Filter (Overrides RICE)</Text>
+              <Text style={[styles.sectionLabel, { marginBottom: 10 }]}>MoSCoW Filter (Overrides RICE)</Text>
               <View style={styles.moscowRow}>
                 {MOSCOW_OPTIONS.map(m => {
                   const active = form.moscow === m;
@@ -203,7 +212,25 @@ export default function WizardModal({ visible, onClose, editingTask }: Props) {
 
             {/* RICE Sliders */}
             <View style={styles.section}>
-              <Text style={styles.sectionLabel}>RICE Estimation (Fibonacci)</Text>
+              <View style={styles.sectionLabelRow}>
+                <Text style={styles.sectionLabel}>RICE Estimation (Fibonacci)</Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    setForm(f => ({
+                      ...f,
+                      infoOpen: f.infoOpen === 'fibonacci' ? null : 'fibonacci',
+                    }))
+                  }
+                >
+                  <HelpCircle size={14} color="#475569" />
+                </TouchableOpacity>
+              </View>
+              {form.infoOpen === 'fibonacci' && (
+                <View style={[styles.hint, { marginBottom: 12 }]}>
+                  <Text style={styles.hintBold}>{FIBONACCI_HINT.title}</Text>
+                  <Text style={styles.hintText}>{FIBONACCI_HINT.desc}</Text>
+                </View>
+              )}
               {(['reach', 'impact', 'confidence', 'effort'] as const).map(metric => (
                 <View key={metric} style={styles.metricCard}>
                   <View style={styles.metricHeader}>
@@ -224,10 +251,8 @@ export default function WizardModal({ visible, onClose, editingTask }: Props) {
                   </View>
                   {form.infoOpen === metric && (
                     <View style={styles.hint}>
-                      <Text style={styles.hintText}>
-                        <Text style={styles.hintBold}>Why the jump? </Text>
-                        {METRIC_HINT}
-                      </Text>
+                      <Text style={styles.hintBold}>{RICE_HINTS[metric].title}</Text>
+                      <Text style={styles.hintText}>{RICE_HINTS[metric].desc}</Text>
                     </View>
                   )}
                   <View style={styles.fibRow}>
@@ -406,13 +431,18 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: 20,
   },
+  sectionLabelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 10,
+  },
   sectionLabel: {
     fontSize: 10,
     fontWeight: '700',
     color: '#475569',
     textTransform: 'uppercase',
     letterSpacing: 1.5,
-    marginBottom: 10,
   },
   moscowRow: {
     flexDirection: 'row',

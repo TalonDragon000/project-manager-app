@@ -3,7 +3,7 @@ import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet,
   SafeAreaView, GestureResponderEvent,
 } from 'react-native';
-import { CircleCheck as CheckCircle2, Plus, ChevronRight } from 'lucide-react-native';
+import { CircleCheck as CheckCircle2, Plus, ChevronRight, ChevronLeft } from 'lucide-react-native';
 import { useApp } from '@/context/AppContext';
 import {
   COLUMNS, calculateScore, getColumnAccentColor,
@@ -203,7 +203,19 @@ export default function TasksScreen() {
         <View style={{ height: 100 }} />
       </ScrollView>
 
-      {/* Peek arrow */}
+      {/* Left peek arrow */}
+      {colIndex > 0 && (
+        <TouchableOpacity
+          style={styles.peekBtnLeft}
+          onPress={() => setColIndex(i => i - 1)}
+          activeOpacity={0.7}
+        >
+          <ChevronLeft size={16} color="#475569" />
+          <Text style={styles.peekLabel}>{COLUMNS[colIndex - 1]}</Text>
+        </TouchableOpacity>
+      )}
+
+      {/* Right peek arrow */}
       {colIndex < COLUMNS.length - 1 && (
         <TouchableOpacity
           style={styles.peekBtn}
@@ -458,6 +470,21 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 12,
     borderWidth: 1,
     borderRightWidth: 0,
+    borderColor: '#1e293b',
+    paddingVertical: 14,
+    paddingHorizontal: 8,
+    alignItems: 'center',
+    gap: 4,
+  },
+  peekBtnLeft: {
+    position: 'absolute',
+    left: 0,
+    top: '50%',
+    backgroundColor: '#0f172a',
+    borderTopRightRadius: 12,
+    borderBottomRightRadius: 12,
+    borderWidth: 1,
+    borderLeftWidth: 0,
     borderColor: '#1e293b',
     paddingVertical: 14,
     paddingHorizontal: 8,

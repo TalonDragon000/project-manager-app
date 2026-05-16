@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Tabs } from 'expo-router';
-import { Hop as Home, LayoutList, Folder, Target, Zap } from 'lucide-react-native';
+import { Hop as Home, LayoutList, Folder, Target, Zap, Plus, X } from 'lucide-react-native';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { AppProvider } from '@/context/AppContext';
 import VaultModal from '@/components/modals/VaultModal';
@@ -30,6 +30,7 @@ function GlobalFAB() {
           style={styles.fabOverlay}
           activeOpacity={1}
           onPress={() => setFabOpen(false)}
+          accessible={false}
         >
           <View style={styles.fabMenu}>
             <TouchableOpacity
@@ -66,7 +67,9 @@ function GlobalFAB() {
           onPress={() => setFabOpen(o => !o)}
           activeOpacity={0.85}
         >
-          <Text style={styles.fabIcon}>{fabOpen ? '×' : '+'}</Text>
+          <View style={{ transform: [{ rotate: fabOpen ? '45deg' : '0deg' }] }}>
+            {fabOpen ? <X size={24} color="#fff" /> : <Plus size={24} color="#fff" />}
+          </View>
         </TouchableOpacity>
       </View>
 
@@ -156,6 +159,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     paddingBottom: 150,
+    backgroundColor: 'rgba(2,6,23,0.8)',
   },
   fabMenu: {
     backgroundColor: '#0f172a',
@@ -201,6 +205,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#ec4899',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 4,
+    borderColor: '#020617',
     shadowColor: '#ec4899',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.5,
@@ -209,11 +215,6 @@ const styles = StyleSheet.create({
   },
   fabActive: {
     backgroundColor: '#334155',
-  },
-  fabIcon: {
-    fontSize: 28,
-    color: '#fff',
-    lineHeight: 32,
-    fontWeight: '300',
+    borderColor: '#020617',
   },
 });
