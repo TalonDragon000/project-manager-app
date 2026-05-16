@@ -454,9 +454,8 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     zIndex: 20,
     justifyContent: 'flex-end',
-    alignItems: 'flex-end',
-    paddingBottom: 90,
-    paddingRight: 20,
+    alignItems: 'center',
+    paddingBottom: 150,
   },
   fabMenu: {
     backgroundColor: '#0f172a',
@@ -488,7 +487,9 @@ const styles = StyleSheet.create({
   fabWrap: {
     position: 'absolute',
     bottom: 80,
-    right: 20,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
     zIndex: 30,
   },
   fab: {
