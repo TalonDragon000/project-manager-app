@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     zIndex: 20,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingBottom: 80,
+    paddingBottom: 90,
     backgroundColor: 'rgba(2,6,23,0.8)',
   },
   fabMenu: {
