@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.5,
     shadowRadius: 16,
-    elevation: 10,
+    elevation: 20,
   },
   fabActive: {
     backgroundColor: '#334155',
